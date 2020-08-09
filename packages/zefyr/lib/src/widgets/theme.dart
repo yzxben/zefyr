@@ -86,6 +86,8 @@ class ZefyrThemeData {
       padding: EdgeInsets.symmetric(vertical: 8.0),
     );
     return ZefyrThemeData(
+      cursorColor: Theme.of(context).cursorColor,
+      textSelectionColor: Theme.of(context).textSelectionColor,
       defaultLineTheme: defaultLineTheme,
       attributeTheme: AttributeTheme.fallback(context, defaultLineTheme),
       indentWidth: 16.0,
