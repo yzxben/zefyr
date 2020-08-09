@@ -61,12 +61,18 @@ class ZefyrThemeData {
   /// The colors used to render editor toolbar.
   final ToolbarTheme toolbarTheme;
 
+  final Color cursorColor;
+
+  final Color textSelectionColor;
+
   /// Creates a [ZefyrThemeData] given a set of exact values.
   const ZefyrThemeData({
     this.defaultLineTheme,
     this.attributeTheme,
     this.indentWidth,
     this.toolbarTheme,
+    this.cursorColor,
+    this.textSelectionColor,
   });
 
   /// The default editor theme.

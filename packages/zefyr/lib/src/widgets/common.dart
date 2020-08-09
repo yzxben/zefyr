@@ -57,8 +57,6 @@ class _ZefyrLineState extends State<ZefyrLine> {
     }
 
     if (scope.isEditable) {
-      Color cursorColor = theme.cursorColor;
-
       content = EditableBox(
         child: content,
         node: widget.node,
@@ -66,8 +64,8 @@ class _ZefyrLineState extends State<ZefyrLine> {
         renderContext: scope.renderContext,
         showCursor: scope.showCursor,
         selection: scope.selection,
-        selectionColor: theme.textSelectionColor,
-        cursorColor: cursorColor,
+        selectionColor: ZefyrTheme.of(context).textSelectionColor,
+        cursorColor: ZefyrTheme.of(context).cursorColor,
       );
       content = CompositedTransformTarget(link: _link, child: content);
     }
