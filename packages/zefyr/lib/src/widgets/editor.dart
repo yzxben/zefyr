@@ -28,10 +28,13 @@ class ZefyrEditor extends StatefulWidget {
     this.selectionControls,
     this.physics,
     this.keyboardAppearance,
+    this.scrollController,
   })  : assert(mode != null),
         assert(controller != null),
         assert(focusNode != null),
         super(key: key);
+
+  final ScrollController scrollController;
 
   /// Controls the document being edited.
   final ZefyrController controller;
@@ -87,6 +90,7 @@ class _ZefyrEditorState extends State<ZefyrEditor> {
   ZefyrThemeData _themeData;
   GlobalKey<ZefyrToolbarState> _toolbarKey;
   ZefyrScaffoldState _scaffold;
+  ScrollController _scrollController;
 
   bool get hasToolbar => _toolbarKey != null;
 
@@ -130,6 +134,7 @@ class _ZefyrEditorState extends State<ZefyrEditor> {
   void initState() {
     super.initState();
     _imageDelegate = widget.imageDelegate;
+    _scrollController = widget.scrollController ?? ScrollController();
   }
 
   @override
@@ -141,6 +146,9 @@ class _ZefyrEditorState extends State<ZefyrEditor> {
     if (widget.imageDelegate != oldWidget.imageDelegate) {
       _imageDelegate = widget.imageDelegate;
       _scope.imageDelegate = _imageDelegate;
+    }
+    if (widget.scrollController != oldWidget.scrollController) {
+      _scrollController = widget.scrollController;
     }
   }
 
@@ -191,6 +199,7 @@ class _ZefyrEditorState extends State<ZefyrEditor> {
         widget.keyboardAppearance ?? themeData.primaryColorBrightness;
 
     Widget editable = ZefyrEditableText(
+      scrollController: _scrollController,
       controller: _scope.controller,
       focusNode: _scope.focusNode,
       imageDelegate: _scope.imageDelegate,
