@@ -102,12 +102,15 @@ class ZefyrThemeData {
     AttributeTheme attributeTheme,
     double indentWidth,
     ToolbarTheme toolbarTheme,
+    Color cursorColor,
+    Color textSelectionColor,
   }) {
     return ZefyrThemeData(
       defaultLineTheme: defaultLineTheme ?? this.defaultLineTheme,
       attributeTheme: attributeTheme ?? this.attributeTheme,
       indentWidth: indentWidth ?? this.indentWidth,
-      toolbarTheme: toolbarTheme ?? this.toolbarTheme,
+      cursorColor: cursorColor ?? this.cursorColor,
+      textSelectionColor: textSelectionColor ?? this.textSelectionColor,
     );
   }
 
@@ -123,6 +126,8 @@ class ZefyrThemeData {
       indentWidth: other.indentWidth ?? indentWidth,
       toolbarTheme:
           toolbarTheme?.merge(other.toolbarTheme) ?? other.toolbarTheme,
+      cursorColor: other.cursorColor,
+      textSelectionColor: other.textSelectionColor,
     );
   }
 
@@ -133,7 +138,9 @@ class ZefyrThemeData {
     return (otherData.defaultLineTheme == defaultLineTheme) &&
         (otherData.attributeTheme == attributeTheme) &&
         (otherData.indentWidth == indentWidth) &&
-        (otherData.toolbarTheme == toolbarTheme);
+        (otherData.toolbarTheme == toolbarTheme) &&
+        (otherData.cursorColor == cursorColor) &&
+        (otherData.textSelectionColor == textSelectionColor);
   }
 
   @override
@@ -143,6 +150,8 @@ class ZefyrThemeData {
       attributeTheme,
       indentWidth,
       toolbarTheme,
+      cursorColor,
+      textSelectionColor,
     ]);
   }
 }
