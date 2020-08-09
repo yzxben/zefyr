@@ -57,20 +57,7 @@ class _ZefyrLineState extends State<ZefyrLine> {
     }
 
     if (scope.isEditable) {
-      Color cursorColor;
-      switch (theme.platform) {
-        case TargetPlatform.iOS:
-        case TargetPlatform.macOS:
-          cursorColor ??= CupertinoTheme.of(context).primaryColor;
-          break;
-
-        case TargetPlatform.android:
-        case TargetPlatform.fuchsia:
-        case TargetPlatform.windows:
-        case TargetPlatform.linux:
-          cursorColor = theme.cursorColor;
-          break;
-      }
+      Color cursorColor = theme.cursorColor;
 
       content = EditableBox(
         child: content,
