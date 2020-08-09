@@ -109,6 +109,7 @@ class ZefyrThemeData {
       defaultLineTheme: defaultLineTheme ?? this.defaultLineTheme,
       attributeTheme: attributeTheme ?? this.attributeTheme,
       indentWidth: indentWidth ?? this.indentWidth,
+      toolbarTheme: toolbarTheme ?? this.toolbarTheme,
       cursorColor: cursorColor ?? this.cursorColor,
       textSelectionColor: textSelectionColor ?? this.textSelectionColor,
     );
