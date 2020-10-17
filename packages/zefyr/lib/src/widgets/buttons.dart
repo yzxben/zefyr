@@ -313,12 +313,15 @@ class _NoteButtonState extends State<NoteButton> {
       context,
       hasLink ? ZefyrToolbarAction.removeNote : ZefyrToolbarAction.note,
       onPressed: () {
+        var baseOffset = editor.selection.baseOffset;
+        var extentOffset = editor.selection.extentOffset;
         if (hasLink) {
           // TODO this can be a bit jumpy
-          var baseOffset = editor.selection.baseOffset;
-          var extentOffset = editor.selection.extentOffset;
           while (editor.selectionStyle.contains(NotusAttribute.link)) {
             baseOffset -= 1;
+            if (baseOffset < 0) {
+              break;
+            }
             editor.updateSelection(TextSelection(
                 baseOffset: baseOffset, extentOffset: extentOffset));
           }
@@ -327,6 +330,9 @@ class _NoteButtonState extends State<NoteButton> {
               baseOffset: baseOffset, extentOffset: extentOffset));
           while (editor.selectionStyle.contains(NotusAttribute.link)) {
             extentOffset += 1;
+            if (extentOffset >= editor.controller.document.length) {
+              break;
+            }
             editor.updateSelection(TextSelection(
                 baseOffset: baseOffset, extentOffset: extentOffset));
           }
@@ -334,30 +340,62 @@ class _NoteButtonState extends State<NoteButton> {
           editor.updateSelection(TextSelection(
               baseOffset: baseOffset, extentOffset: extentOffset));
           editor.formatSelection(NotusAttribute.link.unset);
+          Future.delayed(Duration(milliseconds: 200), () {
+            final startLine = editor.controller.document.lookupLine(baseOffset);
+            final endLine = editor.controller.document.lookupLine(extentOffset);
+            if (startLine != null && endLine != null) {
+              if (endLine.node.toPlainText()[endLine.offset - 1] == ']') {
+                print('delete ]');
+                editor.controller.compose(Delta()
+                  ..retain(extentOffset - 1)
+                  ..delete(1));
+                extentOffset -= 1;
+                if (startLine.node.toPlainText()[startLine.offset] == '[') {
+                  print('delete [');
+                  editor.controller.compose(Delta()
+                    ..retain(baseOffset)
+                    ..delete(1));
+                  extentOffset -= 1;
+                }
+              }
+            }
+            editor.controller.updateSelection(TextSelection(
+                baseOffset: baseOffset, extentOffset: extentOffset));
+          });
           return;
         }
         if (editor.selection.isCollapsed) {
-          final index = editor.selection.baseOffset;
           final placeholder = '[]';
           editor.controller.compose(Delta()
-            ..retain(index)
+            ..retain(baseOffset)
             ..insert(placeholder));
-          editor.controller.formatText(index, placeholder.length,
+          editor.controller.formatText(baseOffset, placeholder.length,
               NotusAttribute.link.fromString('writingspace://note'));
-          editor.controller.updateSelection(TextSelection(
-              baseOffset: index + (placeholder.length / 2).round(),
-              extentOffset: index + (placeholder.length / 2).round()));
+          editor.controller.updateSelection(
+              TextSelection(
+                  baseOffset: baseOffset + (placeholder.length / 2).round(),
+                  extentOffset: baseOffset + (placeholder.length / 2).round()),
+              source: ChangeSource.local);
           return;
         }
-        editor.controller.compose(Delta()
-          ..retain(editor.selection.baseOffset)
-          ..insert('['));
-        editor.controller.compose(Delta()
-          ..retain(editor.selection.extentOffset)
-          ..insert(']'));
-        editor.controller.updateSelection(TextSelection(
-            baseOffset: editor.selection.baseOffset,
-            extentOffset: editor.selection.extentOffset + 1));
+        final startLine = editor.controller.document.lookupLine(baseOffset);
+        final endLine = editor.controller.document.lookupLine(extentOffset);
+        if (startLine != null && endLine != null) {
+          if (startLine.node.toPlainText()[startLine.offset] != '[') {
+            editor.controller.compose(Delta()
+              ..retain(baseOffset)
+              ..insert('['));
+            extentOffset += 1;
+          }
+          if (endLine.node.toPlainText()[endLine.offset - 1] != ']') {
+            editor.controller.compose(Delta()
+              ..retain(extentOffset)
+              ..insert(']'));
+            extentOffset += 1;
+          }
+          editor.controller.updateSelection(TextSelection(
+              baseOffset: baseOffset, extentOffset: extentOffset));
+        }
         toolbar.editor.formatSelection(
             NotusAttribute.link.fromString('writingspace://note'));
       },
