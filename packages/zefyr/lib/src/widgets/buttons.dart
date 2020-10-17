@@ -4,7 +4,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:notus/notus.dart';
+import 'package:quill_delta/quill_delta.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:math';
 
 import 'scope.dart';
 import 'theme.dart';
@@ -292,6 +294,74 @@ class _ImageButtonState extends State<ImageButton> {
     if (image != null) {
       editor.formatSelection(NotusAttribute.embed.image(image));
     }
+  }
+}
+
+class NoteButton extends StatefulWidget {
+  @override
+  _NoteButtonState createState() => _NoteButtonState();
+}
+
+class _NoteButtonState extends State<NoteButton> {
+  @override
+  Widget build(BuildContext context) {
+    final toolbar = ZefyrToolbar.of(context);
+    final editor = toolbar.editor;
+    final hasLink = editor.selectionStyle.contains(NotusAttribute.link);
+
+    return toolbar.buildButton(
+      context,
+      hasLink ? ZefyrToolbarAction.removeNote : ZefyrToolbarAction.note,
+      onPressed: () {
+        if (hasLink) {
+          // TODO this can be a bit jumpy
+          var baseOffset = editor.selection.baseOffset;
+          var extentOffset = editor.selection.extentOffset;
+          while (editor.selectionStyle.contains(NotusAttribute.link)) {
+            baseOffset -= 1;
+            editor.updateSelection(TextSelection(
+                baseOffset: baseOffset, extentOffset: extentOffset));
+          }
+          baseOffset += 1;
+          editor.updateSelection(TextSelection(
+              baseOffset: baseOffset, extentOffset: extentOffset));
+          while (editor.selectionStyle.contains(NotusAttribute.link)) {
+            extentOffset += 1;
+            editor.updateSelection(TextSelection(
+                baseOffset: baseOffset, extentOffset: extentOffset));
+          }
+          extentOffset -= 1;
+          editor.updateSelection(TextSelection(
+              baseOffset: baseOffset, extentOffset: extentOffset));
+          editor.formatSelection(NotusAttribute.link.unset);
+          return;
+        }
+        if (editor.selection.isCollapsed) {
+          final index = editor.selection.baseOffset;
+          final placeholder = '[]';
+          editor.controller.compose(Delta()
+            ..retain(index)
+            ..insert(placeholder));
+          editor.controller.formatText(index, placeholder.length,
+              NotusAttribute.link.fromString('writingspace://note'));
+          editor.controller.updateSelection(TextSelection(
+              baseOffset: index + (placeholder.length / 2).round(),
+              extentOffset: index + (placeholder.length / 2).round()));
+          return;
+        }
+        editor.controller.compose(Delta()
+          ..retain(editor.selection.baseOffset)
+          ..insert('['));
+        editor.controller.compose(Delta()
+          ..retain(editor.selection.extentOffset)
+          ..insert(']'));
+        editor.controller.updateSelection(TextSelection(
+            baseOffset: editor.selection.baseOffset,
+            extentOffset: editor.selection.extentOffset + 1));
+        toolbar.editor.formatSelection(
+            NotusAttribute.link.fromString('writingspace://note'));
+      },
+    );
   }
 }
 

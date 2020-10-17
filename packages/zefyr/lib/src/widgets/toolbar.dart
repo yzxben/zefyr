@@ -34,6 +34,8 @@ enum ZefyrToolbarAction {
   hideKeyboard,
   close,
   confirm,
+  note,
+  removeNote,
 }
 
 final kZefyrToolbarAttributeActions = <ZefyrToolbarAction, NotusAttributeKey>{
@@ -252,7 +254,7 @@ class ZefyrToolbarState extends State<ZefyrToolbar>
     final buttons = <Widget>[
       buildButton(context, ZefyrToolbarAction.bold),
       buildButton(context, ZefyrToolbarAction.italic),
-      LinkButton(),
+      NoteButton(),
       HeadingButton(),
       buildButton(context, ZefyrToolbarAction.bulletList),
       buildButton(context, ZefyrToolbarAction.numberList),
@@ -364,6 +366,8 @@ class _DefaultZefyrToolbarDelegate implements ZefyrToolbarDelegate {
   };
 
   static const kDefaultButtonTexts = {
+    ZefyrToolbarAction.note: '􀕻', // ellipsis.bubble.fill
+    ZefyrToolbarAction.removeNote: '􀕺', // ellipsis.bubble
     ZefyrToolbarAction.headingLevel1: 'H1',
     ZefyrToolbarAction.headingLevel2: 'H2',
     ZefyrToolbarAction.headingLevel3: 'H3',
