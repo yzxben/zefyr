@@ -351,7 +351,7 @@ class _NoteButtonState extends State<NoteButton> {
           editor.updateSelection(TextSelection(
               baseOffset: baseOffset, extentOffset: extentOffset));
           editor.formatSelection(NotusAttribute.link.unset);
-          Future.delayed(Duration(milliseconds: 500), () {
+          Future.delayed(Duration(milliseconds: 100), () {
             final startLine = editor.controller.document.lookupLine(baseOffset);
             final endLine = editor.controller.document.lookupLine(extentOffset);
             if (startLine != null && endLine != null) {
