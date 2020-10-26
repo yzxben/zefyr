@@ -92,7 +92,12 @@ class ZefyrToolbarScaffold extends StatelessWidget {
     }
     return Container(
       constraints: constraints,
-      child: Material(color: theme.color, child: Row(children: children)),
+      child: ClipRect(
+          child: BackdropFilter(
+              filter: ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+              child: Material(
+                  color: theme.color.withAlpha(0),
+                  child: Row(children: children)))),
     );
   }
 }
@@ -366,8 +371,8 @@ class _DefaultZefyrToolbarDelegate implements ZefyrToolbarDelegate {
   };
 
   static const kDefaultButtonTexts = {
-    ZefyrToolbarAction.note: '􀕻', // ellipsis.bubble.fill
-    ZefyrToolbarAction.removeNote: '􀕺', // ellipsis.bubble
+    ZefyrToolbarAction.note: '􀌹', // bubble.middle.bottom.fill
+    ZefyrToolbarAction.removeNote: '􀌸', // bubble.middle.bottom
     ZefyrToolbarAction.headingLevel1: 'H1',
     ZefyrToolbarAction.headingLevel2: 'H2',
     ZefyrToolbarAction.headingLevel3: 'H3',
@@ -390,7 +395,7 @@ class _DefaultZefyrToolbarDelegate implements ZefyrToolbarDelegate {
       final text = kDefaultButtonTexts[action];
       assert(text != null);
       final style = theme.textTheme.caption
-          .copyWith(fontWeight: FontWeight.bold, fontSize: 14.0);
+          .copyWith(fontWeight: FontWeight.bold, fontSize: 16.0);
       return ZefyrButton.text(
         action: action,
         text: text,
