@@ -348,8 +348,19 @@ class _NoteButtonState extends State<NoteButton> {
                 baseOffset: baseOffset, extentOffset: extentOffset);
           }
           extentOffset -= 1;
+
           editor.updateSelection(TextSelection(
               baseOffset: baseOffset, extentOffset: extentOffset));
+
+          // Wait a little bit for effect... and then delete the note
+          Future.delayed(Duration(milliseconds: 250), () {
+            editor.controller.compose(Delta()
+              ..retain(baseOffset)
+              ..delete(extentOffset - baseOffset));
+          });
+
+          /*
+          // This logic below un-comments the note and removes the [ and ].
           editor.formatSelection(NotusAttribute.link.unset);
           Future.delayed(Duration(milliseconds: 100), () {
             final startLine = editor.controller.document.lookupLine(baseOffset);
@@ -373,6 +384,7 @@ class _NoteButtonState extends State<NoteButton> {
             editor.controller.updateSelection(TextSelection(
                 baseOffset: baseOffset, extentOffset: extentOffset));
           });
+          */
           return;
         }
         if (editor.selection.isCollapsed) {

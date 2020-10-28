@@ -257,9 +257,9 @@ class ZefyrToolbarState extends State<ZefyrToolbar>
 
   List<Widget> _buildButtons(BuildContext context) {
     final buttons = <Widget>[
+      NoteButton(),
       buildButton(context, ZefyrToolbarAction.bold),
       buildButton(context, ZefyrToolbarAction.italic),
-      NoteButton(),
       HeadingButton(),
       buildButton(context, ZefyrToolbarAction.bulletList),
       buildButton(context, ZefyrToolbarAction.numberList),
@@ -371,8 +371,8 @@ class _DefaultZefyrToolbarDelegate implements ZefyrToolbarDelegate {
   };
 
   static const kDefaultButtonTexts = {
-    ZefyrToolbarAction.note: '􀌹', // bubble.middle.bottom.fill
-    ZefyrToolbarAction.removeNote: '􀌸', // bubble.middle.bottom
+    ZefyrToolbarAction.note: '􀌶', // bubble.middle.bottom.fill
+    ZefyrToolbarAction.removeNote: '􀈑', // bubble.middle.bottom
     ZefyrToolbarAction.headingLevel1: 'H1',
     ZefyrToolbarAction.headingLevel2: 'H2',
     ZefyrToolbarAction.headingLevel3: 'H3',
@@ -395,7 +395,7 @@ class _DefaultZefyrToolbarDelegate implements ZefyrToolbarDelegate {
       final text = kDefaultButtonTexts[action];
       assert(text != null);
       final style = theme.textTheme.caption
-          .copyWith(fontWeight: FontWeight.bold, fontSize: 16.0);
+          .copyWith(fontWeight: FontWeight.w600, fontSize: 20.0);
       return ZefyrButton.text(
         action: action,
         text: text,
