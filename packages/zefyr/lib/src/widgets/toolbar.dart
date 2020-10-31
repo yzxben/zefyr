@@ -92,12 +92,14 @@ class ZefyrToolbarScaffold extends StatelessWidget {
     }
     return Container(
       constraints: constraints,
-      child: ClipRect(
-          child: BackdropFilter(
-              filter: ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-              child: Material(
-                  color: theme.color.withAlpha(0),
-                  child: Row(children: children)))),
+      child: Material(
+          color: theme.color,
+          child: Container(
+            decoration: BoxDecoration(
+                border: Border(
+                    top: BorderSide(color: theme.iconColor.withOpacity(0.07)))),
+            child: Row(children: children),
+          )),
     );
   }
 }
