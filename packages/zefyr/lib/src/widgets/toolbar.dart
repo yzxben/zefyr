@@ -92,7 +92,14 @@ class ZefyrToolbarScaffold extends StatelessWidget {
     }
     return Container(
       constraints: constraints,
-      child: Material(color: theme.color, child: Row(children: children)),
+      child: Material(
+          color: theme.color,
+          child: Container(
+            decoration: BoxDecoration(
+                border: Border(
+                    top: BorderSide(color: theme.iconColor.withOpacity(0.07)))),
+            child: Row(children: children),
+          )),
     );
   }
 }
@@ -252,9 +259,9 @@ class ZefyrToolbarState extends State<ZefyrToolbar>
 
   List<Widget> _buildButtons(BuildContext context) {
     final buttons = <Widget>[
+      NoteButton(),
       buildButton(context, ZefyrToolbarAction.bold),
       buildButton(context, ZefyrToolbarAction.italic),
-      NoteButton(),
       HeadingButton(),
       buildButton(context, ZefyrToolbarAction.bulletList),
       buildButton(context, ZefyrToolbarAction.numberList),
@@ -390,7 +397,7 @@ class _DefaultZefyrToolbarDelegate implements ZefyrToolbarDelegate {
       final text = kDefaultButtonTexts[action];
       assert(text != null);
       final style = theme.textTheme.caption
-          .copyWith(fontWeight: FontWeight.bold, fontSize: 14.0);
+          .copyWith(fontWeight: FontWeight.w600, fontSize: 20.0);
       return ZefyrButton.text(
         action: action,
         text: text,

@@ -169,10 +169,10 @@ class ZefyrScope extends ChangeNotifier {
   }
 
   void updateSelection(TextSelection value,
-      {ChangeSource source = ChangeSource.remote}) {
+      {ChangeSource source = ChangeSource.remote, bool notify = true}) {
     assert(isEditable);
     assert(!_disposed);
-    _controller.updateSelection(value, source: source);
+    _controller.updateSelection(value, source: source, notify: notify);
   }
 
   void formatSelection(NotusAttribute value) {

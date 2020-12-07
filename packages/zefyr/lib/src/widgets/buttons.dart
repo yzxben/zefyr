@@ -303,6 +303,12 @@ class NoteButton extends StatefulWidget {
 }
 
 class _NoteButtonState extends State<NoteButton> {
+  NotusStyle styleAtSelection(TextSelection selection, NotusDocument document) {
+    final start = selection.start;
+    final length = selection.end - start;
+    return document.collectStyle(start, length);
+  }
+
   @override
   Widget build(BuildContext context) {
     final toolbar = ZefyrToolbar.of(context);
@@ -315,32 +321,48 @@ class _NoteButtonState extends State<NoteButton> {
       onPressed: () {
         var baseOffset = editor.selection.baseOffset;
         var extentOffset = editor.selection.extentOffset;
+        final document = editor.controller.document;
+        var selection = editor.selection;
         if (hasLink) {
-          // TODO this can be a bit jumpy
-          while (editor.selectionStyle.contains(NotusAttribute.link)) {
+          while (styleAtSelection(selection, document)
+              .contains(NotusAttribute.link)) {
             baseOffset -= 1;
             if (baseOffset < 0) {
               break;
             }
-            editor.updateSelection(TextSelection(
-                baseOffset: baseOffset, extentOffset: extentOffset));
+            selection = TextSelection(
+                baseOffset: baseOffset, extentOffset: extentOffset);
           }
           baseOffset += 1;
-          editor.updateSelection(TextSelection(
-              baseOffset: baseOffset, extentOffset: extentOffset));
-          while (editor.selectionStyle.contains(NotusAttribute.link)) {
+          selection =
+              TextSelection(baseOffset: baseOffset, extentOffset: extentOffset);
+          while (styleAtSelection(selection, document)
+              .contains(NotusAttribute.link)) {
             extentOffset += 1;
-            if (extentOffset >= editor.controller.document.length) {
+            if (extentOffset >= editor.controller.document.length - 1) {
+              // Hack - Cancel out the "-= 1" after this loop exits.
+              extentOffset += 1;
               break;
             }
-            editor.updateSelection(TextSelection(
-                baseOffset: baseOffset, extentOffset: extentOffset));
+            selection = TextSelection(
+                baseOffset: baseOffset, extentOffset: extentOffset);
           }
           extentOffset -= 1;
+
           editor.updateSelection(TextSelection(
               baseOffset: baseOffset, extentOffset: extentOffset));
+
+          // Wait a little bit for effect... and then delete the note
+          Future.delayed(Duration(milliseconds: 250), () {
+            editor.controller.compose(Delta()
+              ..retain(baseOffset)
+              ..delete(extentOffset - baseOffset));
+          });
+
+          /*
+          // This logic below un-comments the note and removes the [ and ].
           editor.formatSelection(NotusAttribute.link.unset);
-          Future.delayed(Duration(milliseconds: 200), () {
+          Future.delayed(Duration(milliseconds: 100), () {
             final startLine = editor.controller.document.lookupLine(baseOffset);
             final endLine = editor.controller.document.lookupLine(extentOffset);
             if (startLine != null && endLine != null) {
@@ -360,6 +382,7 @@ class _NoteButtonState extends State<NoteButton> {
             editor.controller.updateSelection(TextSelection(
                 baseOffset: baseOffset, extentOffset: extentOffset));
           });
+          */
           return;
         }
         if (editor.selection.isCollapsed) {
