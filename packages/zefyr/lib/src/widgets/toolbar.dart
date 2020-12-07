@@ -366,8 +366,8 @@ class _DefaultZefyrToolbarDelegate implements ZefyrToolbarDelegate {
   };
 
   static const kDefaultButtonTexts = {
-    ZefyrToolbarAction.note: '􀕻', // ellipsis.bubble.fill
-    ZefyrToolbarAction.removeNote: '􀕺', // ellipsis.bubble
+    ZefyrToolbarAction.note: '􀌪', // bubble.left
+    ZefyrToolbarAction.removeNote: '􀕺', // trash
     ZefyrToolbarAction.headingLevel1: 'H1',
     ZefyrToolbarAction.headingLevel2: 'H2',
     ZefyrToolbarAction.headingLevel3: 'H3',

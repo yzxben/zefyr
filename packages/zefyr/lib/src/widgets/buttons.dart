@@ -345,13 +345,11 @@ class _NoteButtonState extends State<NoteButton> {
             final endLine = editor.controller.document.lookupLine(extentOffset);
             if (startLine != null && endLine != null) {
               if (endLine.node.toPlainText()[endLine.offset - 1] == ']') {
-                print('delete ]');
                 editor.controller.compose(Delta()
                   ..retain(extentOffset - 1)
                   ..delete(1));
                 extentOffset -= 1;
                 if (startLine.node.toPlainText()[startLine.offset] == '[') {
-                  print('delete [');
                   editor.controller.compose(Delta()
                     ..retain(baseOffset)
                     ..delete(1));
